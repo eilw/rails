@@ -1,7 +1,20 @@
 class RestaurantsController < ApplicationController
+
+  before_action :authenticate_user!, :except => [:index, :show]
+  before_action :restaurant_owner, :except =>[:index, :show, :new, :create]
+
+
+  def restaurant_owner
+    @restaurant = Restaurant.find(params[:id])
+    unless @restaurant.user_id == current_user.id
+      flash[:notice] = 'You are not authorised to change the restaurant'
+      redirect_to restaurants_path
+    end
+  end
+
+
   def index
     @restaurants = Restaurant.all
-
   end
 
   def new
@@ -33,7 +46,7 @@ class RestaurantsController < ApplicationController
   end
 
   def restaurant_params
-    params.require(:restaurant).permit(:name)
+    params.require(:restaurant).permit(:name, :user_id)
   end
 
   def destroy

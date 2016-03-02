@@ -1,6 +1,12 @@
 require 'rails_helper.rb'
+require_relative './helpers/features_spec_helper'
 
 feature 'restaurants' do
+
+	before do
+		sign_up_helper
+	end
+
 	context 'no restaurants have been added' do
 		scenario 'should desplay a prompt to add a restaurant' do
 			visit '/restaurants'
@@ -55,9 +61,12 @@ feature 'restaurants' do
 	end
 
 	context 'edit restaurants' do
-		before {Restaurant.create name: 'KFC'}
+		before do
+			user = User.find_by(email: 'test@example.com')
+			rest = Restaurant.create name: 'KFC', user_id: user.id
+		end
 
-		scenario 'let a user edit a restaurant' do
+		scenario 'users can edit the ones they have created ' do
 			visit '/restaurants'
 			click_link 'Edit KFC'
 			fill_in 'Name', with: 'Kentucky Fried Chicken'
@@ -65,16 +74,34 @@ feature 'restaurants' do
 			expect(page).to have_content 'Kentucky Fried Chicken'
 			expect(current_path).to eq '/restaurants'
 		end
+
+		scenario 'users can not edit another users restaurants' do
+			sign_up_with_second_user
+			visit '/restaurants'
+			click_link 'Edit KFC'
+			expect(page).to have_content 'You are not authorised to change'
+		end
 	end
 
 	context 'deleting restaurants' do
-		before {Restaurant.create name: 'KFC'}
+		before do
+			user = User.find_by(email: 'test@example.com')
+			rest = Restaurant.create name: 'KFC', user_id: user.id
+		end
 
 		scenario 'removes a restaurant when a user clicks a delete link' do
 			visit '/restaurants'
 			click_link 'Delete KFC'
 			expect(page).not_to have_content 'KFC'
 			expect(page).to have_content 'Restaurant deleted successfully'
+		end
+
+		scenario 'A user can only delete a restaurant they have created' do
+			sign_up_with_second_user
+			visit '/restaurants'
+			click_link 'Delete KFC'
+			expect(page).to have_content 'KFC'
+			expect(page).to have_content 'You are not authorised to change'
 		end
 	end
 
