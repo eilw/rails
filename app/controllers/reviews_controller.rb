@@ -1,10 +1,13 @@
 class ReviewsController < ApplicationController
 
-  def restaurant_owner
-    @restaurant = Restaurant.find(params[:id])
-    unless @restaurant.user_id == current_user.id
-      flash[:notice] = 'You are not authorised to change the restaurant'
-      redirect_to restaurants_path
+  before_action :authenticate_user! #, :except => [:index, :show]
+
+
+  def only_one_review_checker
+    @restaurant = Restaurant.find(params[:restaurant_id])
+    if (@restaurant.reviews.find_by(user_id: current_user.id)) != nil
+      flash[:notice] = 'You can only review a restaurant once'
+      redirect_to restaurants_path and return 'stop'
     end
   end
 
@@ -14,10 +17,25 @@ class ReviewsController < ApplicationController
   end
 
   def create
+    return if only_one_review_checker == 'stop'
     @restaurant = Restaurant.find(params[:restaurant_id])
     @restaurant.reviews.create(review_params)
 
-    redirect_to restaurants_path
+    redirect_to restaurants_path and return
+  end
+
+
+  def destroy
+    @restaurant = Restaurant.find(params[:restaurant_id])
+    p params
+    @review = Review.find(params[:id])
+    if (@review.user_id == current_user.id)
+      @review.destroy
+      flash[:notice] = 'Review deleted successfully'
+    else
+      flash[:notice] = 'No review to delete'
+    end
+    redirect_to '/restaurants'
   end
 
   def review_params
