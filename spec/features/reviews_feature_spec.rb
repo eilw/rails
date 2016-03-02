@@ -19,7 +19,7 @@ feature 'reviewing' do
     fill_in "Thoughts", with: 'hmmm'
     select '3', from: 'Rating'
     click_button 'Leave Review'
-    expect(page).to have_content('You can only review a restaurant once')
+    expect(page).to have_content('You have already reviewed this restaurant')
   end
 
   scenario 'users can delete reviews' do
