@@ -7,8 +7,7 @@
 
 - if @restaurants.any?
   - @restaurants.each do |restaurant|
-    %h2= restaurant.name
-    = link_to restaurant.name, restaurant_path(restaurant)
+    %h2= link_to restaurant.name, restaurant_path(restaurant)
     %h3 Reviews:
     - if restaurant.reviews.any?
       %ul
@@ -16,12 +15,19 @@
         %li
           = review.thoughts
           %strong= review.rating
-          \/5
-          = link_to "Delete review", restaurant_review_path(restaurant, review), method: :delete
+          \/5 by:
+          = review.get_email(review.user_id)
+          - if (current_user && current_user.owns?(review) )
+            = link_to "Delete review", restaurant_review_path(restaurant, review), method: :delete
     - else
       %p No reviews
 
-    = link_to "Review #{restaurant.name}", new_restaurant_review_path(restaurant)
+    - if (current_user && current_user.has_reviewed?(restaurant))
+      %p You have already reviewed: <b>#{restaurant.name}</b>
+    - elsif (current_user && current_user.owns?(restaurant))
+      %p You cannot review a restaurant you added
+    - else
+      = link_to "Review #{restaurant.name}", new_restaurant_review_path(restaurant)
     = link_to "Edit #{restaurant.name}", edit_restaurant_path(restaurant)
     = link_to "Delete #{restaurant.name}", restaurant_path(restaurant), method: :delete
 - else

@@ -23,4 +23,14 @@ class User < ActiveRecord::Base
    reviewed_restaurants.include? restaurant
  end
 
+ def owns?(entity)
+   entity.user_id == self.id
+ end
+
+
+
+
+ # def review_id_finder(restaurant)
+ # end
+
 end

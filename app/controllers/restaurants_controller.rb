@@ -46,7 +46,7 @@ class RestaurantsController < ApplicationController
   end
 
   def restaurant_params
-    params.require(:restaurant).permit(:name, :user_id)
+    params.require(:restaurant).permit(:name, :description, :user_id)
   end
 
   def destroy
@@ -57,3 +57,6 @@ class RestaurantsController < ApplicationController
   end
 
 end
+
+# migration for join table:
+# bin/rails d migration CreateJoinTableReviewedRestaurants user restaurant review

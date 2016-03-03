@@ -3,12 +3,8 @@ require_relative './helpers/features_spec_helper'
 
 feature 'restaurants' do
 
-	before do
-		sign_up_helper
-	end
-
 	context 'no restaurants have been added' do
-		scenario 'should desplay a prompt to add a restaurant' do
+		scenario 'should display a prompt to add a restaurant' do
 			visit '/restaurants'
 			expect(page).to have_content 'No restaurant yet!'
 			expect(page).to have_link 'Add a restaurant'
@@ -29,6 +25,7 @@ feature 'restaurants' do
 
 	context 'creating restaurants' do
 		scenario 'prompts user to fill out a form, then displays the new restaurant' do
+			sign_up_helper
 			visit '/restaurants'
 			click_link 'Add a restaurant'
 			fill_in 'Name', with: 'KFC'
@@ -39,6 +36,7 @@ feature 'restaurants' do
 
 		context 'creating an invalid restaurant' do
 			scenario 'does not let you submit a name that is too short' do
+				sign_up_helper
 				visit '/restaurants'
 				click_link 'Add a restaurant'
 				fill_in 'Name', with: 'kf'
@@ -62,6 +60,7 @@ feature 'restaurants' do
 
 	context 'edit restaurants' do
 		before do
+			sign_up_helper
 			user = User.find_by(email: 'test@example.com')
 			rest = Restaurant.create name: 'KFC', user_id: user.id
 		end
@@ -85,6 +84,7 @@ feature 'restaurants' do
 
 	context 'deleting restaurants' do
 		before do
+			sign_up_helper
 			user = User.find_by(email: 'test@example.com')
 			rest = Restaurant.create name: 'KFC', user_id: user.id
 		end

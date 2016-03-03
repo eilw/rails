@@ -3,37 +3,58 @@ require_relative './helpers/features_spec_helper'
 
 
 feature 'reviewing' do
-  before {Restaurant.create name: 'KFC'}
 
-  scenario 'allows users to leave a review using a form' do
-    sign_up_and_review
+  context('A user is signed in after a restaurant is created') do
 
-    expect(current_path).to eq '/restaurants'
-    expect(page).to have_content('so so')
+    before {Restaurant.create name: 'KFC'}
+
+    scenario 'allows users to leave a review using a form' do
+      sign_up_and_review('so so', 3)
+
+      expect(current_path).to eq '/restaurants'
+      expect(page).to have_content('so so')
+    end
+
+    scenario 'a user can only leave one review per restaurant' do
+      sign_up_and_review('so so', 3)
+      visit '/restaurants'
+      expect(page).not_to have_link('Review KFC')
+    end
+
+    scenario 'users can delete reviews' do
+      sign_up_and_review('so so', 3)
+      visit '/restaurants'
+      click_link 'Delete review'
+      expect(page).not_to have_content('so so')
+    end
+
+    scenario 'users can only their delete their own reviews' do
+      sign_up_and_review('so so', 3)
+      sign_up_with_second_user
+      visit '/restaurants'
+      expect(page).not_to have_link('Delete review')
+      # expect(page).to have_content('so so')
+    end
+
+    scenario 'each review contains the mail address of the reviewer' do
+      sign_up_and_review('so so', 3)
+      visit('/restaurants')
+      expect(page).to have_content('test@example.com')
+    end
+
   end
 
-  scenario 'a user can only leave one review per restaurant' do
-    sign_up_and_review
-    visit '/restaurants'
-    click_link 'Review KFC'
-    fill_in "Thoughts", with: 'hmmm'
-    select '3', from: 'Rating'
-    click_button 'Leave Review'
-    expect(page).to have_content('You have already reviewed this restaurant')
+  context 'A user creates the restaurant' do
+    before do
+			sign_up_helper
+			user = User.find_by(email: 'test@example.com')
+			rest = Restaurant.create name: 'KFC', user_id: user.id
+		end
+
+    scenario 'a user cannot review a restaurant they created' do
+      expect(page).not_to have_link('Review KFC')
+    end
+
   end
 
-  scenario 'users can delete reviews' do
-    sign_up_and_review
-    visit '/restaurants'
-    click_link 'Delete review'
-    expect(page).not_to have_content('so so')
-  end
-
-  scenario 'users can only their own reviews' do
-    sign_up_and_review
-    sign_up_with_second_user
-    visit '/restaurants'
-    click_link 'Delete review'
-    expect(page).to have_content('so so')
-  end
 end

@@ -1,4 +1,4 @@
-
+ #TODO could refacto this by just directly creating a user, and then logging in, in particular for the second user
   def sign_up_helper
     visit ('/')
     click_link('Sign up')
@@ -18,11 +18,11 @@
     click_button('Sign up')
   end
 
-  def sign_up_and_review
+  def sign_up_and_review(thoughts, rating)
     sign_up_helper
     visit '/restaurants'
     click_link 'Review KFC'
-    fill_in "Thoughts", with: 'so so'
-    select '3', from: 'Rating'
+    fill_in "Thoughts", with: thoughts
+    select rating, from: 'Rating'
     click_button 'Leave Review'
   end
