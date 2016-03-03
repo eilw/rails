@@ -68,11 +68,12 @@ feature 'reviewing' do
     end
 
     scenario 'shows the time ago of a review' do
-      new_time = Time.local(2008, 9, 1, 12, 0, 0)
-      Timecop.travel(new_time)
+      new_time = Time.local(2016, 1, 1, 12, 0, 0)
+      Timecop.travel(-3600)
       sign_up_and_review('so so', 3)
-      # Timecop.travel(3600)
-      expect(page).to have_content('09/01/08')
+      Timecop.return
+      visit('/')
+      expect(page).to have_content('about 1 hour')
     end
 
   end
