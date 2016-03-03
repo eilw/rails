@@ -18,15 +18,14 @@
           \/5 by:
           = review.get_email(review.user_id)
           = distance_of_time_in_words(Time.at(review.created_at), Time.now)
-          = Time.at(review.created_at)
-          = link_to "Endorse Review", review_endorsements_path(review), method: :post
-          %p= pluralize review.endorsements.count, 'endorsement'
+          = link_to "Endorse", review_endorsements_path(review), class: 'endorsements-link'
+          %span.endorsements_count= review.endorsements.count
+          = 'endorsement'.pluralize review.endorsements.count
           - if (current_user && current_user.owns?(review) )
             = link_to "Delete review", review_path(review), method: :delete
       %h3 Average rating: #{star_rating(restaurant.average_rating)}
     - else
       %p No reviews
-
     - if (current_user && current_user.has_reviewed?(restaurant))
       %p You have already reviewed: <b>#{restaurant.name}</b>
     - elsif (current_user && current_user.owns?(restaurant))
