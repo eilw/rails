@@ -41,6 +41,7 @@ group :development, :test do
   gem 'byebug'
   gem 'shoulda-matchers'
   gem 'rspec-collection_matchers'
+  gem 'timecop'
 end
 
 group :test do

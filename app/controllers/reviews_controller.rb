@@ -9,14 +9,12 @@ class ReviewsController < ApplicationController
 
   def create
     @restaurant = Restaurant.find(params[:restaurant_id])
-    @review = @restaurant.reviews.build_with_user review_params, current_user
-    @review.save
+    @review = @restaurant.reviews.create_with_user review_params, current_user
     redirect_to restaurants_path
   end
 
 
   def destroy
-    @restaurant = Restaurant.find(params[:restaurant_id])
     @review = Review.find(params[:id])
     if (@review.user_id == current_user.id)
       @review.destroy
@@ -26,7 +24,7 @@ class ReviewsController < ApplicationController
   end
 
   def review_params
-    params.require(:review).permit(:thoughts, :rating, :user_id)
+    params.require(:review).permit(:thoughts, :rating)
   end
 
 

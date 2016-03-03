@@ -41,7 +41,6 @@ feature 'reviewing' do
       visit('/restaurants')
       expect(page).to have_content('test@example.com')
     end
-
   end
 
   context 'A user creates the restaurant' do
@@ -65,9 +64,15 @@ feature 'reviewing' do
       sign_up_and_review('so so', 3)
       sign_up_with_second_user
       leave_review('great', 5)
-      # expect(page).to have_content('Average rating: 4')
       expect(page).to have_content('Average rating: ★★★★☆')
+    end
 
+    scenario 'shows the time ago of a review' do
+      new_time = Time.local(2008, 9, 1, 12, 0, 0)
+      Timecop.travel(new_time)
+      sign_up_and_review('so so', 3)
+      # Timecop.travel(3600)
+      expect(page).to have_content('09/01/08')
     end
 
   end
