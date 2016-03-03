@@ -54,6 +54,21 @@ feature 'reviewing' do
     scenario 'a user cannot review a restaurant they created' do
       expect(page).not_to have_link('Review KFC')
     end
+  end
+
+  context 'restaurant create that is not owned' do
+    before do
+      Restaurant.create name: 'KFC'
+		end
+
+    scenario 'displays an average rating for all reviews' do
+      sign_up_and_review('so so', 3)
+      sign_up_with_second_user
+      leave_review('great', 5)
+      # expect(page).to have_content('Average rating: 4')
+      expect(page).to have_content('Average rating: ★★★★☆')
+
+    end
 
   end
 

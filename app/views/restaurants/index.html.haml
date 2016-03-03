@@ -19,6 +19,7 @@
           = review.get_email(review.user_id)
           - if (current_user && current_user.owns?(review) )
             = link_to "Delete review", restaurant_review_path(restaurant, review), method: :delete
+      %h3 Average rating: #{restaurant.average_rating.to_i}  
     - else
       %p No reviews
 

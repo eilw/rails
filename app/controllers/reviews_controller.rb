@@ -29,7 +29,6 @@ class ReviewsController < ApplicationController
     params.require(:review).permit(:thoughts, :rating, :user_id)
   end
 
-  Review.find_by(restaurant_id: params[:restaurant_id], user_id: params[:user_id])
 
 
 

@@ -9,5 +9,5 @@ class Review < ActiveRecord::Base
     user = User.find(user_id)
     user.email
   end
-  
+
 end
