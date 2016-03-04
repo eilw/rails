@@ -1,5 +1,7 @@
 require 'rails_helper.rb'
 require_relative './helpers/features_spec_helper'
+require_relative './helpers/wait_for_ajax'
+
 
 feature 'endorsing reviews' do
   before do
@@ -15,13 +17,10 @@ feature 'endorsing reviews' do
 
   scenario 'Keeps track of the num of endorsements', js:true do
     visit '/restaurants'
-    click_link 'Endorse'
-    expect(page).to have_content('1 endorsement')
-    click_link 'Endorse'
-    expect(page).to have_content('2 endorsements')
-    click_link 'Endorse'
-    expect(page).to have_content('3 endorsements')
-    click_link 'Endorse'
+    4.times do
+      click_link 'Endorse'
+      wait_for_ajax
+    end
     expect(page).to have_content('4 endorsements')
   end
 

@@ -34,6 +34,16 @@ feature 'restaurants' do
 			expect(current_path).to eq '/restaurants'
 		end
 
+		scenario 'can upload a picture' do
+			sign_up_helper
+			visit '/restaurants'
+			click_link 'Add a restaurant'
+			fill_in 'Name', with: 'KFC'
+			attach_file 'Image', Rails.root + 'spec/features/images/hammericon.png'
+			click_button 'Create Restaurant'
+			expect(page).to have_xpath("//img[@src=\"/html/body/img[1]\"]")
+		end
+
 		context 'creating an invalid restaurant' do
 			scenario 'does not let you submit a name that is too short' do
 				sign_up_helper
