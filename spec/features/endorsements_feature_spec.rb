@@ -2,6 +2,7 @@ require 'rails_helper.rb'
 require_relative './helpers/features_spec_helper'
 require_relative './helpers/wait_for_ajax'
 
+# = image_tag restaurant.image.url(:thumb)
 
 feature 'endorsing reviews' do
   before do
