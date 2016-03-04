@@ -8,7 +8,7 @@
 - if @restaurants.any?
   - @restaurants.each do |restaurant|
     %h2= link_to restaurant.name, restaurant_path(restaurant)
-    = image_tag restaurant.image.url(:thumb)
+    = image_tag restaurant.image.path(:thumb)
     %h3 Reviews:
     - if restaurant.reviews.any?
       %ul
