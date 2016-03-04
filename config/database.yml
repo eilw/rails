@@ -83,4 +83,3 @@ production:
   database: yelp_clone_production
   username: yelp_clone
   password: <%= ENV['YELP_CLONE_DATABASE_PASSWORD'] %>
-  url: <%= ENV['DATABASE_URL'] %>
